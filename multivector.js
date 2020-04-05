@@ -91,7 +91,7 @@ function vector_spherical(r, theta, phi=Math.PI/2){
 T = 2*Math.PI; // Tau or '1 turn'
 
 // length
-mul(a,a);
+mul(vector_spherical(1, T/8),vector_spherical(1, T/8));
 
 // area
 mul(vector(1,0,0), vector(0,1,0));
