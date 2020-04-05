@@ -5,13 +5,13 @@
 // multivectors are of the form [ e0 e1 e2 e3 e12 e23 e31 e123 ]
 
 // multivector product in R3
-// c.e0   =   +a.e0*b.e0  +a.e1*b.e1  +a.e2*b.e2  +a.e3*b.e3  -a.e12*b.e12 -a.e23*b.e23 -a.e31*b.e31 -a.e123*b.e123;
-// c.e1   =   +a.e0*b.e1  +a.e1*b.e0  -a.e2*b.e12  +a.e3*b.e31  +a.e12*b.e2 -a.e23*b.e123 -a.e31*b.e3 -a.e123*b.e23;
-// c.e2   =   +a.e0*b.e2  +a.e1*b.e12  +a.e2*b.e0  -a.e3*b.e23  -a.e12*b.e1 +a.e23*b.e3 -a.e31*b.e123 -a.e123*b.e31;
-// c.e3   =   +a.e0*b.e3  -a.e1*b.e31  +a.e2*b.e23  +a.e3*b.e0  -a.e12*b.e123 -a.e23*b.e2 +a.e31*b.e1 -a.e123*b.e12;
-// c.e12   =   +a.e0*b.e12  +a.e1*b.e2  -a.e2*b.e1  +a.e3*b.e123  +a.e12*b.e0 -a.e23*b.e31 +a.e31*b.e23 +a.e123*b.e3;
-// c.e23   =   +a.e0*b.e23  +a.e1*b.e123  +a.e2*b.e3  -a.e3*b.e2  +a.e12*b.e31 +a.e23*b.e0 -a.e31*b.e12 +a.e123*b.e1;
-// c.e31   =   +a.e0*b.e31  -a.e1*b.e3  +a.e2*b.e123  +a.e3*b.e1  -a.e12*b.e23 +a.e23*b.e12 +a.e31*b.e0 +a.e123*b.e2;
+// c.e0     =   +a.e0*b.e0  +a.e1*b.e1  +a.e2*b.e2  +a.e3*b.e3  -a.e12*b.e12 -a.e23*b.e23 -a.e31*b.e31 -a.e123*b.e123;
+// c.e1     =   +a.e0*b.e1  +a.e1*b.e0  -a.e2*b.e12  +a.e3*b.e31  +a.e12*b.e2 -a.e23*b.e123 -a.e31*b.e3 -a.e123*b.e23;
+// c.e2     =   +a.e0*b.e2  +a.e1*b.e12  +a.e2*b.e0  -a.e3*b.e23  -a.e12*b.e1 +a.e23*b.e3 -a.e31*b.e123 -a.e123*b.e31;
+// c.e3     =   +a.e0*b.e3  -a.e1*b.e31  +a.e2*b.e23  +a.e3*b.e0  -a.e12*b.e123 -a.e23*b.e2 +a.e31*b.e1 -a.e123*b.e12;
+// c.e12    =   +a.e0*b.e12  +a.e1*b.e2  -a.e2*b.e1  +a.e3*b.e123  +a.e12*b.e0 -a.e23*b.e31 +a.e31*b.e23 +a.e123*b.e3;
+// c.e23    =   +a.e0*b.e23  +a.e1*b.e123  +a.e2*b.e3  -a.e3*b.e2  +a.e12*b.e31 +a.e23*b.e0 -a.e31*b.e12 +a.e123*b.e1;
+// c.e31    =   +a.e0*b.e31  -a.e1*b.e3  +a.e2*b.e123  +a.e3*b.e1  -a.e12*b.e23 +a.e23*b.e12 +a.e31*b.e0 +a.e123*b.e2;
 // c.e123   =   +a.e0*b.e123  +a.e1*b.e23  +a.e2*b.e31  +a.e3*b.e12  +a.e12*b.e3 +a.e23*b.e1 +a.e31*b.e2 +a.e123*b.e0;    
 
 function init(){
@@ -41,10 +41,12 @@ function trivector(a){
 
 function mul(){
 
+
     function geometric_product(a, b){
 
-
-        c = [0, 0,0,0, 0,0,0, 0];
+            c = [0, 0,0,0, 0,0,0, 0];
+        // "All the pieces matter" - Lester Freamon
+        // https://www.euclideanspace.com/maths/algebra/clifford/d3/arithmetic/index.htm
         c[0]   =   +a[0]*b[0]  +a[1]*b[1]  +a[2]*b[2]  +a[3]*b[3]  -a[4]*b[4] -a[5]*b[5] -a[6]*b[6] -a[7]*b[7];
         c[1]   =   +a[0]*b[1]  +a[1]*b[0]  -a[2]*b[4]  +a[3]*b[6]  +a[4]*b[2] -a[5]*b[7] -a[6]*b[3] -a[7]*b[5];
         c[2]   =   +a[0]*b[2]  +a[1]*b[4]  +a[2]*b[0]  -a[3]*b[5]  -a[4]*b[1] +a[5]*b[3] -a[6]*b[7] -a[7]*b[6];
@@ -76,33 +78,48 @@ function rot(a,b){
     return mul(b,a,a,a,b);
 }
 
-function sphere(r, theta, phi=Math.PI/2){
+function vector_spherical(r, theta, phi=Math.PI/2){
+    // Spherical coordinates
+    // x = cos(theta)*sin(phi); y = cos(theta-90)*sin(phi); z = cos(phi); 
     return vector(
         r*Math.cos(theta)*Math.sin(phi), 
         r*Math.sin(theta)*Math.sin(phi), 
         r*Math.cos(phi)
     );
-    // Spherical coordinates
-    // x = cos(theta)*sin(phi); y = cos(theta-90)*sin(phi); z = cos(phi); 
 }
 
 // console.log("Import math object");
 // Object.getOwnPropertyNames(Math).forEach( function ( a ) { eval( a + "=Math." + a ); });     
 
-T = 2*Math.PI; // Tau
-
-a = sphere(1, T/8);
-b = sphere(1, T/8, T/8);
-
-r = mul(b,a,a,a,b);
+T = 2*Math.PI; // Tau or '1 turn'
 
 // length
+
 mul(a,a);
+
+// area
+mul(vector(1,0,0), vector(0,1,0));
+mul(vector_spherical(1,T/8), vector_spherical(1,3*T/8));
 
 // volume
 mul(vector(1,0,0), vector(0,1,0), vector(0,0,1));
+mul(vector_spherical(1, T/8), vector_spherical(1, 3*T/8), vector(0,0,1));
+
+// 2D rotation (complex numbers)
+mul(vector(1,0,0), bivector(1,0,0)); 
+spinor = mul(vector(1,0,0), vector_spherical(1,T/12))
+mul(vector(1,0,0), spinor);
+
+
+// 3D rotation (multiply v by twice the angle between a and b)
+v = vector(1,0,0);
+a = vector_spherical(1, T/8);
+b = vector_spherical(1, T/8, T/8);
+mul(b,a,v,a,b);
+
+// spinor1 = mul(vector(1,0,0), vector_spherical(1,T/8))
+// spinor2 = mul(vector(1,0,0), vector_spherical(1,T/8,T/4))
+// mul(vector(1,0,0), spinor1, spinor2);
 
 // chirality???
 mul(trivector(3), trivector(4));
-
-mul(bivector(1,0,0), vector(1));
