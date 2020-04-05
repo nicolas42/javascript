@@ -85,33 +85,74 @@ function vector_spherical(r, theta, phi=Math.PI/2){
     );
 }
 
+function print(arg){
+    var o = [];
+    
+    arg.forEach(function(a){
+        if (Math.abs(a) < 1e-10) { a = 0.0 }
+        o.push(a.toFixed(1));
+    });
+    return o.join(", ");
+}
+
+function print_scalar(a){
+    console.log( "scalar( " + print(a.slice(1,2)) + " )" );
+}
+
+function print_vector(a){
+    console.log( "vector( " + print(a.slice(1,4)) + " )");
+}
+
+function print_bivector(a){
+    console.log( "bivector( " + print(a.slice(4,7)) + " )");
+}
+
+function print_trivector(a){
+    console.log( "trivector( " + print(a.slice(7)) + " )");
+}
+
 // console.log("Import math object");
 // Object.getOwnPropertyNames(Math).forEach( function ( a ) { eval( a + "=Math." + a ); });     
 
 T = 2*Math.PI; // Tau or '1 turn'
 
 // length
-mul(vector_spherical(1, T/8),vector_spherical(1, T/8));
+a = vector(1,1,0);
+r = mul(a,a);
+print_scalar(r);
+
+r = mul(vector_spherical(1, T/8),vector_spherical(1, T/8));
+print_scalar(r);
 
 // area
-mul(vector(1,0,0), vector(0,1,0));
-mul(vector_spherical(1,T/8), vector_spherical(1,3*T/8));
+r = mul(vector(1,0,0), vector(0,1,0));
+print_bivector(r);
+
+r = mul(vector_spherical(1,T/8), vector_spherical(1,3*T/8));
+print_bivector(r);
 
 // volume
-mul(vector(1,0,0), vector(0,1,0), vector(0,0,1));
-mul(vector_spherical(1, T/8), vector_spherical(1, 3*T/8), vector(0,0,1));
+r = mul(vector(1,0,0), vector(0,1,0), vector(0,0,1));
+print_trivector(r);
+
+r = mul(vector_spherical(1, T/8), vector_spherical(1, 3*T/8), vector(0,0,1));
+print_trivector(r);
 
 // 2D rotation (complex numbers)
-mul(vector(1,0,0), bivector(1,0,0)); 
+r = mul(vector(1,0,0), bivector(1,0,0)); 
+print(r);
+
 spinor = mul(vector(1,0,0), vector_spherical(1,T/12))
-mul(vector(1,0,0), spinor);
+r = mul(vector(1,0,0), spinor);
+print(r);
 
 
 // 3D rotation (multiply v by twice the angle between a and b)
 v = vector(1,0,0);
 a = vector_spherical(1, T/8);
 b = vector_spherical(1, T/8, T/8);
-mul(b,a,v,a,b);
+r = mul(b,a,v,a,b);
+print(r);
 
 // spinor1 = mul(vector(1,0,0), vector_spherical(1,T/8))
 // spinor2 = mul(vector(1,0,0), vector_spherical(1,T/8,T/4))
